@@ -1,582 +1,746 @@
-import { useState } from 'react'
-import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import Head from 'next/head'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
 
-export default function CourierForm() {
-  const [formData, setFormData] = useState({
-    senderName: '',
-    senderPhone: '',
-    senderAddress: '',
-    senderPincode: '',
-    receiverName: '',
-    receiverPhone: '',
-    receiverAddress: '',
-    receiverPincode: '',
-    packageWeight: '',
-    dimensions: '',
-    description: '',
-    serviceType: 'standard'
-  })
-  
-  const [price, setPrice] = useState(0)
-  const [priceBreakdown, setPriceBreakdown] = useState('Enter weight to calculate')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+export default function HomePage() {
+  const router = useRouter()
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [userAuth, setUserAuth] = useState(null)
 
-  const calculatePrice = (weight) => {
-    const w = parseFloat(weight)
-    if (isNaN(w) || w <= 0) {
-      return { price: 0, breakdown: 'Enter valid weight' }
+  useEffect(() => {
+    const authData = localStorage.getItem('userAuth')
+    if (authData) {
+      setIsAuthenticated(true)
+      setUserAuth(JSON.parse(authData))
     }
-    
-    let price = 0
-    let breakdown = ''
-    
-    if (w <= 1) {
-      price = 270
-      breakdown = 'Up to 1kg: ₹270'
-    } else if (w <= 2) {
-      price = 320
-      breakdown = 'Up to 2kg: ₹320'
+  }, [])
+
+  const handleGetStarted = () => {
+    if (isAuthenticated) {
+      router.push('/order-form')
     } else {
-      const extraKg = Math.ceil(w - 2)
-      price = 320 + (extraKg * 100)
-      breakdown = `2kg: ₹320 + ${extraKg}kg × ₹100 = ₹${price}`
+      router.push('/auth')
     }
-    
-    return { price, breakdown }
   }
 
-  const handleWeightChange = (e) => {
-    const weight = e.target.value
-    setFormData(prev => ({ ...prev, packageWeight: weight }))
-    
-    const result = calculatePrice(weight)
-    setPrice(result.price)
-    setPriceBreakdown(result.breakdown)
+  const handleLogout = () => {
+    localStorage.removeItem('userAuth')
+    setIsAuthenticated(false)
+    setUserAuth(null)
   }
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    
-    const orderData = {
-      ...formData,
-      calculatedPrice: price,
-      timestamp: new Date().toISOString(),
-      orderId: 'ORD' + Date.now()
-    }
-    
-    try {
-      // Here you'll integrate with Delhivery API later
-      console.log('Order submitted:', orderData)
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      alert(`🎉 Order Placed Successfully!\n\nOrder ID: ${orderData.orderId}\nTotal Cost: ₹${price}\n\nYou will receive SMS updates on the registered mobile number.`)
-      
-      // Reset form
-      setFormData({
-        senderName: '',
-        senderPhone: '',
-        senderAddress: '',
-        senderPincode: '',
-        receiverName: '',
-        receiverPhone: '',
-        receiverAddress: '',
-        receiverPincode: '',
-        packageWeight: '',
-        dimensions: '',
-        description: '',
-        serviceType: 'standard'
-      })
-      setPrice(0)
-      setPriceBreakdown('Enter weight to calculate')
-      
-    } catch (error) {
-      alert('Error placing order. Please try again.')
-      console.error('Order error:', error)
-    } finally {
-      setIsSubmitting(false)
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
     }
   }
 
   return (
     <>
       <Head>
-        <title>Ship Your Courier - NEXYE | Fast & Reliable Shipping</title>
-        <meta name="description" content="Ship your packages with real-time price calculation. Fast, reliable courier service with Delhivery integration." />
+        <title>NEXYE Courier - Fast & Reliable Shipping Across India</title>
+        <meta name="description" content="Professional courier services with real-time tracking, competitive pricing, and nationwide delivery. Ship your packages safely and efficiently with NEXYE." />
+        <meta name="keywords" content="courier service, package delivery, shipping, logistics, India courier, fast delivery" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="📦" />
       </Head>
       
-      <div style={{ 
+      <div style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        padding: '20px',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
       }}>
-        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+        
+        {/* Header/Navigation */}
+        <Header />
+
+        {/* Hero Section */}
+        <section id="home" style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          padding: '100px 20px',
+          color: 'white',
+          textAlign: 'center',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          {/* Animated Background Elements */}
+          <div style={{
+            position: 'absolute',
+            top: '10%',
+            left: '10%',
+            width: '100px',
+            height: '100px',
+            background: 'rgba(255,255,255,0.1)',
+            borderRadius: '50%',
+            animation: 'float 6s ease-in-out infinite'
+          }}></div>
+          <div style={{
+            position: 'absolute',
+            top: '60%',
+            right: '15%',
+            width: '150px',
+            height: '150px',
+            background: 'rgba(255,255,255,0.05)',
+            borderRadius: '50%',
+            animation: 'float 8s ease-in-out infinite reverse'
+          }}></div>
           
-          {/* Header */}
-          <div style={{ textAlign: 'center', marginBottom: '30px', color: 'white' }}>
-            <h1 style={{ 
-              fontSize: '3rem', 
-              margin: '0 0 10px 0',
+          <div style={{ maxWidth: '800px', margin: '0 auto', position: 'relative', zIndex: '2' }}>
+            <h1 style={{
+              fontSize: '4rem',
+              fontWeight: '800',
+              margin: '0 0 20px 0',
               textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
-              fontWeight: '700'
+              lineHeight: '1.2'
             }}>
-              📦 NEXYE Courier
+              Fast & Reliable<br/>Courier Services
             </h1>
-            <p style={{ fontSize: '1.3rem', opacity: '0.9', margin: '0' }}>
-              Fast, Reliable & Affordable Shipping Across India
+            <p style={{
+              fontSize: '1.3rem',
+              margin: '0 0 40px 0',
+              opacity: '0.95',
+              lineHeight: '1.6',
+              maxWidth: '600px',
+              margin: '0 auto 40px auto'
+            }}>
+              Ship your packages across India with confidence. Real-time tracking, competitive pricing, and doorstep pickup & delivery services.
             </p>
+            
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
+              <button 
+                onClick={handleGetStarted}
+                style={{
+                  background: 'rgba(255,255,255,0.9)',
+                  color: '#333',
+                  border: 'none',
+                  padding: '18px 35px',
+                  borderRadius: '30px',
+                  fontSize: '1.1rem',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
+                  transition: 'transform 0.3s ease',
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px'
+                }}
+                onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
+                onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
+              >
+                🚀 Start Shipping Now
+              </button>
+              <button 
+                onClick={() => scrollToSection('services')}
+                style={{
+                  background: 'rgba(255,255,255,0.1)',
+                  color: 'white',
+                  border: '2px solid rgba(255,255,255,0.5)',
+                  padding: '16px 35px',
+                  borderRadius: '30px',
+                  fontSize: '1.1rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  backdropFilter: 'blur(10px)',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(255,255,255,0.2)'
+                  e.target.style.transform = 'translateY(-2px)'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(255,255,255,0.1)'
+                  e.target.style.transform = 'translateY(0)'
+                }}
+              >
+                📦 Learn More
+              </button>
+            </div>
           </div>
 
-          <form onSubmit={handleSubmit} style={{
-            background: 'rgba(255,255,255,0.98)',
-            borderRadius: '25px',
-            padding: '40px',
-            boxShadow: '0 25px 50px rgba(0,0,0,0.15)',
-            backdropFilter: 'blur(10px)'
-          }}>
+          <style jsx>{`
+            @keyframes float {
+              0%, 100% { transform: translateY(0px); }
+              50% { transform: translateY(-20px); }
+            }
+          `}</style>
+        </section>
 
-            {/* Sender Section */}
-            <div style={{
-              background: 'linear-gradient(135deg, #e3f2fd, #bbdefb)',
-              padding: '30px',
-              borderRadius: '20px',
-              marginBottom: '30px',
-              border: '2px solid #2196f3'
-            }}>
-              <h2 style={{ 
-                color: '#1565c0', 
-                marginBottom: '25px',
-                fontSize: '1.5rem',
-                display: 'flex',
-                alignItems: 'center'
-              }}>
-                <span style={{ marginRight: '12px', fontSize: '1.8rem' }}>👤</span> 
-                Sender Information
-              </h2>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
-                <div>
-                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#1565c0' }}>
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    name="senderName"
-                    value={formData.senderName}
-                    onChange={handleInputChange}
-                    required
-                    style={{
-                      width: '100%',
-                      padding: '14px',
-                      border: '2px solid #e1f5fe',
-                      borderRadius: '10px',
-                      fontSize: '16px',
-                      boxSizing: 'border-box',
-                      transition: 'border-color 0.3s'
-                    }}
-                    onFocus={(e) => e.target.style.borderColor = '#2196f3'}
-                    onBlur={(e) => e.target.style.borderColor = '#e1f5fe'}
-                  />
-                </div>
-                
-                <div>
-                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#1565c0' }}>
-                    Phone Number *
-                  </label>
-                  <input
-                    type="tel"
-                    name="senderPhone"
-                    value={formData.senderPhone}
-                    onChange={handleInputChange}
-                    required
-                    pattern="[0-9]{10}"
-                    placeholder="10-digit mobile number"
-                    style={{
-                      width: '100%',
-                      padding: '14px',
-                      border: '2px solid #e1f5fe',
-                      borderRadius: '10px',
-                      fontSize: '16px',
-                      boxSizing: 'border-box',
-                      transition: 'border-color 0.3s'
-                    }}
-                    onFocus={(e) => e.target.style.borderColor = '#2196f3'}
-                    onBlur={(e) => e.target.style.borderColor = '#e1f5fe'}
-                  />
-                </div>
-              </div>
-              
-              <div style={{ marginTop: '20px' }}>
-                <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#1565c0' }}>
-                  Complete Address *
-                </label>
-                <textarea
-                  name="senderAddress"
-                  value={formData.senderAddress}
-                  onChange={handleInputChange}
-                  required
-                  rows="3"
-                  placeholder="House/Flat No, Street, Locality, City, State"
-                  style={{
-                    width: '100%',
-                    padding: '14px',
-                    border: '2px solid #e1f5fe',
-                    borderRadius: '10px',
-                    fontSize: '16px',
-                    resize: 'vertical',
-                    boxSizing: 'border-box',
-                    fontFamily: 'inherit'
-                  }}
-                />
-              </div>
-              
-              <div style={{ marginTop: '20px', width: '250px' }}>
-                <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#1565c0' }}>
-                  Pincode *
-                </label>
-                <input
-                  type="text"
-                  name="senderPincode"
-                  value={formData.senderPincode}
-                  onChange={handleInputChange}
-                  required
-                  pattern="[0-9]{6}"
-                  maxLength="6"
-                  placeholder="6-digit pincode"
-                  style={{
-                    width: '100%',
-                    padding: '14px',
-                    border: '2px solid #e1f5fe',
-                    borderRadius: '10px',
-                    fontSize: '16px',
-                    boxSizing: 'border-box'
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Receiver Section */}
-            <div style={{
-              background: 'linear-gradient(135deg, #fce4ec, #f8bbd9)',
-              padding: '30px',
-              borderRadius: '20px',
-              marginBottom: '30px',
-              border: '2px solid #e91e63'
-            }}>
-              <h2 style={{ 
-                color: '#ad1457', 
-                marginBottom: '25px',
-                fontSize: '1.5rem',
-                display: 'flex',
-                alignItems: 'center'
-              }}>
-                <span style={{ marginRight: '12px', fontSize: '1.8rem' }}>🎯</span> 
-                Receiver Information
-              </h2>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
-                <div>
-                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#ad1457' }}>
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    name="receiverName"
-                    value={formData.receiverName}
-                    onChange={handleInputChange}
-                    required
-                    style={{
-                      width: '100%',
-                      padding: '14px',
-                      border: '2px solid #fce4ec',
-                      borderRadius: '10px',
-                      fontSize: '16px',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-                
-                <div>
-                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#ad1457' }}>
-                    Mobile Number *
-                  </label>
-                  <input
-                    type="tel"
-                    name="receiverPhone"
-                    value={formData.receiverPhone}
-                    onChange={handleInputChange}
-                    required
-                    pattern="[0-9]{10}"
-                    placeholder="10-digit mobile number"
-                    style={{
-                      width: '100%',
-                      padding: '14px',
-                      border: '2px solid #fce4ec',
-                      borderRadius: '10px',
-                      fontSize: '16px',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-              </div>
-              
-              <div style={{ marginTop: '20px' }}>
-                <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#ad1457' }}>
-                  Complete Address *
-                </label>
-                <textarea
-                  name="receiverAddress"
-                  value={formData.receiverAddress}
-                  onChange={handleInputChange}
-                  required
-                  rows="3"
-                  placeholder="House/Flat No, Street, Locality, City, State"
-                  style={{
-                    width: '100%',
-                    padding: '14px',
-                    border: '2px solid #fce4ec',
-                    borderRadius: '10px',
-                    fontSize: '16px',
-                    resize: 'vertical',
-                    boxSizing: 'border-box',
-                    fontFamily: 'inherit'
-                  }}
-                />
-              </div>
-              
-              <div style={{ marginTop: '20px', width: '250px' }}>
-                <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#ad1457' }}>
-                  Pincode *
-                </label>
-                <input
-                  type="text"
-                  name="receiverPincode"
-                  value={formData.receiverPincode}
-                  onChange={handleInputChange}
-                  required
-                  pattern="[0-9]{6}"
-                  maxLength="6"
-                  placeholder="6-digit pincode"
-                  style={{
-                    width: '100%',
-                    padding: '14px',
-                    border: '2px solid #fce4ec',
-                    borderRadius: '10px',
-                    fontSize: '16px',
-                    boxSizing: 'border-box'
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Package Section */}
-            <div style={{
-              background: 'linear-gradient(135deg, #fff3e0, #ffcc80)',
-              padding: '30px',
-              borderRadius: '20px',
-              marginBottom: '30px',
-              border: '2px solid #ff9800'
-            }}>
-              <h2 style={{ 
-                color: '#e65100', 
-                marginBottom: '25px',
-                fontSize: '1.5rem',
-                display: 'flex',
-                alignItems: 'center'
-              }}>
-                <span style={{ marginRight: '12px', fontSize: '1.8rem' }}>📦</span> 
-                Package Details
-              </h2>
-              
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '20px' }}>
-                <div>
-                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#e65100' }}>
-                    Weight (kg) *
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    min="0.1"
-                    max="50"
-                    name="packageWeight"
-                    value={formData.packageWeight}
-                    onChange={handleWeightChange}
-                    required
-                    placeholder="e.g. 1.5"
-                    style={{
-                      width: '100%',
-                      padding: '14px',
-                      border: '2px solid #fff3e0',
-                      borderRadius: '10px',
-                      fontSize: '16px',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-                
-                <div>
-                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#e65100' }}>
-                    Dimensions (L×W×H cm)
-                  </label>
-                  <input
-                    type="text"
-                    name="dimensions"
-                    value={formData.dimensions}
-                    onChange={handleInputChange}
-                    placeholder="e.g. 15×10×15"
-                    style={{
-                      width: '100%',
-                      padding: '14px',
-                      border: '2px solid #fff3e0',
-                      borderRadius: '10px',
-                      fontSize: '16px',
-                      boxSizing: 'border-box'
-                    }}
-                  />
-                </div>
-                
-                <div>
-                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#e65100' }}>
-                    Service Type
-                  </label>
-                  <select
-                    name="serviceType"
-                    value={formData.serviceType}
-                    onChange={handleInputChange}
-                    style={{
-                      width: '100%',
-                      padding: '14px',
-                      border: '2px solid #fff3e0',
-                      borderRadius: '10px',
-                      fontSize: '16px',
-                      background: 'white',
-                      boxSizing: 'border-box'
-                    }}
-                  >
-                    <option value="standard">Standard (2-4 days)</option>
-                    <option value="express">Express (1-2 days)</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#e65100' }}>
-                  Package Description *
-                </label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  required
-                  rows="3"
-                  placeholder="What are you shipping? (e.g. Electronics, Clothes, Documents, Books)"
-                  style={{
-                    width: '100%',
-                    padding: '14px',
-                    border: '2px solid #fff3e0',
-                    borderRadius: '10px',
-                    fontSize: '16px',
-                    resize: 'vertical',
-                    boxSizing: 'border-box',
-                    fontFamily: 'inherit'
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Price Display */}
-            <div style={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              padding: '30px',
-              borderRadius: '20px',
-              textAlign: 'center',
-              color: 'white',
-              marginBottom: '30px',
-              boxShadow: '0 15px 30px rgba(102,126,234,0.4)',
-              border: '3px solid rgba(255,255,255,0.2)'
-            }}>
-              <h2 style={{ 
-                margin: '0 0 15px 0', 
-                fontSize: '1.8rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                <span style={{ marginRight: '12px', fontSize: '2rem' }}>💰</span> 
-                Shipping Cost
-              </h2>
-              <div style={{ 
-                fontSize: '4rem', 
-                fontWeight: '800', 
-                textShadow: '3px 3px 6px rgba(0,0,0,0.3)',
-                marginBottom: '15px',
-                lineHeight: '1'
-              }}>
-                ₹{price}
-              </div>
-              <div style={{ 
-                fontSize: '1.2rem', 
-                opacity: '0.95',
-                background: 'rgba(255,255,255,0.1)',
-                padding: '10px 20px',
-                borderRadius: '10px',
-                display: 'inline-block'
-              }}>
-                {priceBreakdown}
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={price === 0 || isSubmitting}
-              style={{
-                width: '100%',
-                padding: '20px',
-                background: price > 0 && !isSubmitting
-                  ? 'linear-gradient(135deg, #28a745, #20c997)' 
-                  : '#ccc',
-                color: 'white',
-                border: 'none',
-                borderRadius: '15px',
-                fontSize: '1.3rem',
+        {/* Features Section */}
+        <section style={{
+          padding: '80px 20px',
+          background: '#f8f9fa'
+        }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+              <h2 style={{
+                fontSize: '2.5rem',
                 fontWeight: '700',
-                cursor: price > 0 && !isSubmitting ? 'pointer' : 'not-allowed',
-                transition: 'all 0.3s',
-                boxShadow: price > 0 && !isSubmitting
-                  ? '0 10px 25px rgba(40,167,69,0.4)' 
-                  : 'none',
+                color: '#333',
+                margin: '0 0 20px 0'
+              }}>
+                Why Choose NEXYE?
+              </h2>
+              <p style={{
+                fontSize: '1.1rem',
+                color: '#666',
+                maxWidth: '600px',
+                margin: '0 auto'
+              }}>
+                We provide comprehensive courier solutions with cutting-edge technology and exceptional customer service.
+              </p>
+            </div>
+
+            <div style={{
+              display: 'flex',
+              overflowX: 'auto',
+              gap: '40px',
+              paddingBottom: '20px',
+              scrollSnapType: 'x mandatory'
+            }}>
+              {[
+                {
+                  icon: '⚡',
+                  title: 'Lightning Fast',
+                  description: 'Express delivery within 24-48 hours across major cities'
+                },
+                {
+                  icon: '🔒',
+                  title: 'Secure & Safe',
+                  description: 'Your packages are insured and handled with utmost care'
+                },
+                {
+                  icon: '📍',
+                  title: 'Real-time Tracking',
+                  description: 'Track your shipments live with our advanced tracking system'
+                },
+                {
+                  icon: '💰',
+                  title: 'Competitive Pricing',
+                  description: 'Best rates in the market with transparent pricing'
+                },
+                {
+                  icon: '🏠',
+                  title: 'Doorstep Service',
+                  description: 'Convenient pickup and delivery right at your doorstep'
+                },
+                {
+                  icon: '📞',
+                  title: '24/7 Support',
+                  description: 'Round-the-clock customer support for all your queries'
+                }
+              ].map((feature, index) => (
+                <div key={index} style={{
+                  background: 'white',
+                  padding: '40px 30px',
+                  borderRadius: '20px',
+                  textAlign: 'center',
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+                  transition: 'transform 0.3s ease',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                >
+                  <div style={{
+                    fontSize: '3rem',
+                    marginBottom: '20px'
+                  }}>
+                    {feature.icon}
+                  </div>
+                  <h3 style={{
+                    fontSize: '1.3rem',
+                    fontWeight: '700',
+                    color: '#333',
+                    margin: '0 0 15px 0'
+                  }}>
+                    {feature.title}
+                  </h3>
+                  <p style={{
+                    color: '#666',
+                    lineHeight: '1.6',
+                    margin: '0'
+                  }}>
+                    {feature.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Services Section */}
+        <section id="services" style={{
+          padding: '80px 20px',
+          background: 'white'
+        }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+              <h2 style={{
+                fontSize: '2.5rem',
+                fontWeight: '700',
+                color: '#333',
+                margin: '0 0 20px 0'
+              }}>
+                Our Services
+              </h2>
+              <p style={{
+                fontSize: '1.1rem',
+                color: '#666',
+                maxWidth: '600px',
+                margin: '0 auto'
+              }}>
+                Comprehensive logistics solutions for all your shipping needs
+              </p>
+            </div>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: '40px'
+            }}>
+              {[
+                {
+                  title: 'Standard Delivery',
+                  subtitle: '2-4 Business Days',
+                  price: 'Starting ₹270',
+                  features: ['Nationwide coverage', 'SMS updates', 'Insurance included', 'Proof of delivery']
+                },
+                {
+                  title: 'Express Delivery',
+                  subtitle: '1-2 Business Days',
+                  price: 'Starting ₹450',
+                  features: ['Priority handling', 'Faster transit', 'Live tracking', 'Premium support']
+                },
+                {
+                  title: 'Same Day Delivery',
+                  subtitle: 'Within City Limits',
+                  price: 'Starting ₹200',
+                  features: ['Ultra-fast delivery', 'Real-time updates', 'Dedicated support', 'Emergency service']
+                }
+              ].map((service, index) => (
+                <div key={index} style={{
+                  background: 'linear-gradient(135deg, #f8f9fa, #e9ecef)',
+                  padding: '40px',
+                  borderRadius: '20px',
+                  border: '2px solid #dee2e6',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = '#667eea'
+                  e.currentTarget.style.transform = 'translateY(-5px)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = '#dee2e6'
+                  e.currentTarget.style.transform = 'translateY(0)'
+                }}
+                >
+                  <h3 style={{
+                    fontSize: '1.5rem',
+                    fontWeight: '700',
+                    color: '#333',
+                    margin: '0 0 10px 0'
+                  }}>
+                    {service.title}
+                  </h3>
+                  <p style={{
+                    color: '#667eea',
+                    fontWeight: '600',
+                    margin: '0 0 15px 0'
+                  }}>
+                    {service.subtitle}
+                  </p>
+                  <p style={{
+                    fontSize: '1.3rem',
+                    fontWeight: '700',
+                    color: '#28a745',
+                    margin: '0 0 20px 0'
+                  }}>
+                    {service.price}
+                  </p>
+                  <ul style={{
+                    listStyle: 'none',
+                    padding: '0',
+                    margin: '0'
+                  }}>
+                    {service.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} style={{
+                        padding: '8px 0',
+                        color: '#666',
+                        display: 'flex',
+                        alignItems: 'center'
+                      }}>
+                        <span style={{ color: '#28a745', marginRight: '10px' }}>✓</span>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* About Section */}
+        <section id="about" style={{
+          padding: '80px 20px',
+          background: '#f8f9fa'
+        }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
+              gap: '60px',
+              alignItems: 'center'
+            }}>
+              <div>
+                <h2 style={{
+                  fontSize: '2.5rem',
+                  fontWeight: '700',
+                  color: '#333',
+                  margin: '0 0 20px 0'
+                }}>
+                  About NEXYE Courier
+                </h2>
+                <p style={{
+                  fontSize: '1.1rem',
+                  color: '#666',
+                  lineHeight: '1.8',
+                  margin: '0 0 20px 0'
+                }}>
+                  Since our inception, NEXYE has been at the forefront of providing reliable and efficient courier services across India. We understand that every package carries someone's trust, and we honor that responsibility with dedication and professionalism.
+                </p>
+                <p style={{
+                  fontSize: '1.1rem',
+                  color: '#666',
+                  lineHeight: '1.8',
+                  margin: '0 0 30px 0'
+                }}>
+                  Our network spans across major cities and remote locations, ensuring your packages reach their destination safely and on time. With advanced tracking technology and a customer-first approach, we've become India's trusted courier partner.
+                </p>
+                
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(4, 1fr)',
+                  gap: '40px'
+                }}>
+                  {[
+                    { number: '50k+', label: 'Happy Customers' },
+                    { number: '1M+', label: 'Packages Delivered' },
+                    { number: '500+', label: 'Cities Covered' },
+                    { number: '99.8%', label: 'On-time Delivery' }
+                  ].map((stat, index) => (
+                    <div key={index} style={{
+                      textAlign: 'center',
+                      padding: '20px',
+                      background: 'white',
+                      borderRadius: '15px',
+                      boxShadow: '0 5px 15px rgba(0,0,0,0.1)'
+                    }}>
+                      <div style={{
+                        fontSize: '1.8rem',
+                        fontWeight: '800',
+                        color: '#667eea',
+                        margin: '0 0 5px 0'
+                      }}>
+                        {stat.number}
+                      </div>
+                      <div style={{
+                        fontSize: '0.9rem',
+                        color: '#666',
+                        fontWeight: '500'
+                      }}>
+                        {stat.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div style={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                borderRadius: '20px',
+                padding: '60px 40px',
+                color: 'white',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '4rem', marginBottom: '20px' }}>📦</div>
+                <h3 style={{
+                  fontSize: '1.8rem',
+                  fontWeight: '700',
+                  margin: '0 0 20px 0'
+                }}>
+                  Our Mission
+                </h3>
+                <p style={{
+                  fontSize: '1.1rem',
+                  lineHeight: '1.6',
+                  margin: '0'
+                }}>
+                  To revolutionize the courier industry in India by providing fast, reliable, and affordable logistics solutions while maintaining the highest standards of customer service and package security.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section id="contact" style={{
+          padding: '80px 20px',
+          background: 'white'
+        }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+              <h2 style={{
+                fontSize: '2.5rem',
+                fontWeight: '700',
+                color: '#333',
+                margin: '0 0 20px 0'
+              }}>
+                Get In Touch
+              </h2>
+              <p style={{
+                fontSize: '1.1rem',
+                color: '#666',
+                maxWidth: '600px',
+                margin: '0 auto'
+              }}>
+                Have questions or need assistance? We're here to help you with all your courier needs.
+              </p>
+            </div>
+            
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: '40px'
+            }}>
+              {[
+                {
+                  icon: '📞',
+                  title: 'Phone Support',
+                  info: '+91 8888 888 888',
+                  subtitle: 'Mon-Sat 9AM-7PM'
+                },
+                {
+                  icon: '📧',
+                  title: 'Email Support',
+                  info: 'support@nexye.com',
+                  subtitle: '24/7 Email Support'
+                },
+                {
+                  icon: '🏢',
+                  title: 'Head Office',
+                  info: 'Mumbai, Maharashtra',
+                  subtitle: 'Corporate Headquarters'
+                },
+                {
+                  icon: '💬',
+                  title: 'Live Chat',
+                  info: 'Chat with us now',
+                  subtitle: 'Instant assistance'
+                }
+              ].map((contact, index) => (
+                <div key={index} style={{
+                  background: '#f8f9fa',
+                  padding: '40px 30px',
+                  borderRadius: '20px',
+                  textAlign: 'center',
+                  transition: 'transform 0.3s ease',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                >
+                  <div style={{ fontSize: '3rem', marginBottom: '20px' }}>
+                    {contact.icon}
+                  </div>
+                  <h3 style={{
+                    fontSize: '1.3rem',
+                    fontWeight: '700',
+                    color: '#333',
+                    margin: '0 0 10px 0'
+                  }}>
+                    {contact.title}
+                  </h3>
+                  <p style={{
+                    fontSize: '1.1rem',
+                    color: '#667eea',
+                    fontWeight: '600',
+                    margin: '0 0 5px 0'
+                  }}>
+                    {contact.info}
+                  </p>
+                  <p style={{
+                    color: '#666',
+                    fontSize: '0.9rem',
+                    margin: '0'
+                  }}>
+                    {contact.subtitle}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section style={{
+          padding: '80px 20px',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: 'white',
+          textAlign: 'center'
+        }}>
+          <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+            <h2 style={{
+              fontSize: '2.5rem',
+              fontWeight: '700',
+              margin: '0 0 20px 0'
+            }}>
+              Ready to Ship?
+            </h2>
+            <p style={{
+              fontSize: '1.2rem',
+              margin: '0 0 40px 0',
+              opacity: '0.9'
+            }}>
+              Join thousands of satisfied customers who trust NEXYE for their courier needs.
+            </p>
+            <button 
+              onClick={handleGetStarted}
+              style={{
+                background: 'white',
+                color: '#333',
+                border: 'none',
+                padding: '20px 40px',
+                borderRadius: '30px',
+                fontSize: '1.2rem',
+                fontWeight: '700',
+                cursor: 'pointer',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+                transition: 'transform 0.3s ease',
                 textTransform: 'uppercase',
                 letterSpacing: '1px'
               }}
+              onMouseEnter={(e) => e.target.style.transform = 'translateY(-3px)'}
+              onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
             >
-              {isSubmitting ? '⏳ Processing Order...' : '📦 Place Shipping Order'}
+              🚀 Get Started Today
             </button>
-            
-            <p style={{ 
-              textAlign: 'center', 
-              marginTop: '20px', 
-              fontSize: '14px', 
-              color: '#666',
-              lineHeight: '1.5'
-            }}>
-              🔒 Your information is secure and will be used only for shipping purposes<br/>
-              📱 You'll receive SMS updates on order status
-            </p>
-          </form>
-        </div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <Footer />
       </div>
     </>
-  )
+  );
 }
+
+const styles = {
+  integrationsSection: {
+    padding: '80px 20px',
+    background: '#f0f2f5',
+    textAlign: 'center',
+  },
+  integrationsContent: {
+    maxWidth: '1200px',
+    margin: '0 auto',
+  },
+  integrationsHeading: {
+    fontSize: '2.5rem',
+    fontWeight: '700',
+    color: '#333',
+    marginBottom: '40px',
+    lineHeight: '1.3',
+  },
+  logoGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+    gap: '20px',
+    justifyItems: 'center',
+  },
+  logoItem: {
+    backgroundColor: '#fff',
+    padding: '15px 20px',
+    borderRadius: '8px',
+    boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '70px',
+    width: '100%',
+    maxWidth: '180px',
+    transition: 'transform 0.2s ease-in-out',
+    '&:hover': {
+      transform: 'translateY(-5px)',
+    },
+  },
+  logoImage: {
+    maxWidth: '100%',
+    height: 'auto',
+    maxHeight: '80px',
+    objectFit: 'contain',
+  },
+  container: {
+    fontFamily: 'Arial, sans-serif',
+    lineHeight: '1.6',
+    color: '#333',
+    margin: 0,
+    padding: 0,
+    background: '#f4f4f4'
+  },
+  header: {
+    background: '#333',
+    color: '#fff',
+    padding: '1rem 0',
+    textAlign: 'center'
+  },
+  headerH1: {
+    margin: 0
+  },
+  navbar: {
+    display: 'flex',
+    justifyContent: 'center',
+    background: '#444',
+    padding: '0.5rem 0'
+  },
+  navbarA: {
+    color: '#fff',
+    textDecoration: 'none',
+    padding: '0 1rem'
+  },
+  section: {
+    padding: '20px',
+    margin: '0 20px',
+    background: '#fff',
+    borderBottom: '1px solid #ddd'
+  },
+  sectionH2: {
+    color: '#333'
+  },
+  footer: {
+    textAlign: 'center',
+    padding: '20px',
+    background: '#333',
+    color: '#fff'
+  },
+  logoGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(4, 1fr)',
+    gap: '40px'
+  },
+  logoItem: {
+    background: '#f8f9fa',
+    padding: '40px 30px',
+    borderRadius: '20px',
+    textAlign: 'center',
+    transition: 'transform 0.3s ease',
+    cursor: 'pointer'
+  },
+  logoImage: {
+    maxWidth: '100%',
+    height: 'auto',
+    maxHeight: '80px',
+    objectFit: 'contain',
+  }
+};

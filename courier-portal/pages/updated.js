@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
 
 export default function CourierForm() {
   const router = useRouter()
@@ -132,20 +134,7 @@ export default function CourierForm() {
       }}>
         <div style={{ maxWidth: '900px', margin: '0 auto' }}>
           
-          {/* Header */}
-          <div style={{ textAlign: 'center', marginBottom: '30px', color: 'white' }}>
-            <h1 style={{ 
-              fontSize: '3rem', 
-              margin: '0 0 10px 0',
-              textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
-              fontWeight: '700'
-            }}>
-              📦 NEXYE Courier
-            </h1>
-            <p style={{ fontSize: '1.3rem', opacity: '0.9', margin: '0' }}>
-              Fast, Reliable & Affordable Shipping Across India
-            </p>
-          </div>
+          <Header />
 
           <form onSubmit={handleSubmit} style={{
             background: 'rgba(255,255,255,0.98)',
@@ -198,7 +187,7 @@ export default function CourierForm() {
                     onBlur={(e) => e.target.style.borderColor = '#e1f5fe'}
                   />
                 </div>
-                
+
                 <div>
                   <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#1565c0' }}>
                     Phone Number *
@@ -209,8 +198,6 @@ export default function CourierForm() {
                     value={formData.senderPhone}
                     onChange={handleInputChange}
                     required
-                    pattern="[0-9]{10}"
-                    placeholder="10-digit mobile number"
                     style={{
                       width: '100%',
                       padding: '14px',
@@ -228,29 +215,29 @@ export default function CourierForm() {
               
               <div style={{ marginTop: '20px' }}>
                 <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#1565c0' }}>
-                  Complete Address *
+                  Full Address *
                 </label>
-                <textarea
+                <input
+                  type="text"
                   name="senderAddress"
                   value={formData.senderAddress}
                   onChange={handleInputChange}
                   required
-                  rows="3"
-                  placeholder="House/Flat No, Street, Locality, City, State"
                   style={{
                     width: '100%',
                     padding: '14px',
                     border: '2px solid #e1f5fe',
                     borderRadius: '10px',
                     fontSize: '16px',
-                    resize: 'vertical',
                     boxSizing: 'border-box',
-                    fontFamily: 'inherit'
+                    transition: 'border-color 0.3s'
                   }}
+                  onFocus={(e) => e.target.style.borderColor = '#2196f3'}
+                  onBlur={(e) => e.target.style.borderColor = '#e1f5fe'}
                 />
               </div>
-              
-              <div style={{ marginTop: '20px', width: '250px' }}>
+
+              <div style={{ marginTop: '20px' }}>
                 <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#1565c0' }}>
                   Pincode *
                 </label>
@@ -260,43 +247,43 @@ export default function CourierForm() {
                   value={formData.senderPincode}
                   onChange={handleInputChange}
                   required
-                  pattern="[0-9]{6}"
-                  maxLength="6"
-                  placeholder="6-digit pincode"
                   style={{
                     width: '100%',
                     padding: '14px',
                     border: '2px solid #e1f5fe',
                     borderRadius: '10px',
                     fontSize: '16px',
-                    boxSizing: 'border-box'
+                    boxSizing: 'border-box',
+                    transition: 'border-color 0.3s'
                   }}
+                  onFocus={(e) => e.target.style.borderColor = '#2196f3'}
+                  onBlur={(e) => e.target.style.borderColor = '#e1f5fe'}
                 />
               </div>
             </div>
 
             {/* Receiver Section */}
             <div style={{
-              background: 'linear-gradient(135deg, #fce4ec, #f8bbd9)',
+              background: 'linear-gradient(135deg, #e0f7fa, #b2ebf2)',
               padding: '30px',
               borderRadius: '20px',
               marginBottom: '30px',
-              border: '2px solid #e91e63'
+              border: '2px solid #00bcd4'
             }}>
               <h2 style={{ 
-                color: '#ad1457', 
+                color: '#00838f', 
                 marginBottom: '25px',
                 fontSize: '1.5rem',
                 display: 'flex',
                 alignItems: 'center'
               }}>
-                <span style={{ marginRight: '12px', fontSize: '1.8rem' }}>🎯</span> 
+                <span style={{ marginRight: '12px', fontSize: '1.8rem' }}>Recipient</span> 
                 Receiver Information
               </h2>
               
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
                 <div>
-                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#ad1457' }}>
+                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#00838f' }}>
                     Full Name *
                   </label>
                   <input
@@ -308,17 +295,20 @@ export default function CourierForm() {
                     style={{
                       width: '100%',
                       padding: '14px',
-                      border: '2px solid #fce4ec',
+                      border: '2px solid #e0f7fa',
                       borderRadius: '10px',
                       fontSize: '16px',
-                      boxSizing: 'border-box'
+                      boxSizing: 'border-box',
+                      transition: 'border-color 0.3s'
                     }}
+                    onFocus={(e) => e.target.style.borderColor = '#00bcd4'}
+                    onBlur={(e) => e.target.style.borderColor = '#e0f7fa'}
                   />
                 </div>
-                
+
                 <div>
-                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#ad1457' }}>
-                    Mobile Number *
+                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#00838f' }}>
+                    Phone Number *
                   </label>
                   <input
                     type="tel"
@@ -326,46 +316,47 @@ export default function CourierForm() {
                     value={formData.receiverPhone}
                     onChange={handleInputChange}
                     required
-                    pattern="[0-9]{10}"
-                    placeholder="10-digit mobile number"
                     style={{
                       width: '100%',
                       padding: '14px',
-                      border: '2px solid #fce4ec',
+                      border: '2px solid #e0f7fa',
                       borderRadius: '10px',
                       fontSize: '16px',
-                      boxSizing: 'border-box'
+                      boxSizing: 'border-box',
+                      transition: 'border-color 0.3s'
                     }}
+                    onFocus={(e) => e.target.style.borderColor = '#00bcd4'}
+                    onBlur={(e) => e.target.style.borderColor = '#e0f7fa'}
                   />
                 </div>
               </div>
               
               <div style={{ marginTop: '20px' }}>
-                <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#ad1457' }}>
-                  Complete Address *
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#00838f' }}>
+                  Full Address *
                 </label>
-                <textarea
+                <input
+                  type="text"
                   name="receiverAddress"
                   value={formData.receiverAddress}
                   onChange={handleInputChange}
                   required
-                  rows="3"
-                  placeholder="House/Flat No, Street, Locality, City, State"
                   style={{
                     width: '100%',
                     padding: '14px',
-                    border: '2px solid #fce4ec',
+                    border: '2px solid #e0f7fa',
                     borderRadius: '10px',
                     fontSize: '16px',
-                    resize: 'vertical',
                     boxSizing: 'border-box',
-                    fontFamily: 'inherit'
+                    transition: 'border-color 0.3s'
                   }}
+                  onFocus={(e) => e.target.style.borderColor = '#00bcd4'}
+                  onBlur={(e) => e.target.style.borderColor = '#e0f7fa'}
                 />
               </div>
-              
-              <div style={{ marginTop: '20px', width: '250px' }}>
-                <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#ad1457' }}>
+
+              <div style={{ marginTop: '20px' }}>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#00838f' }}>
                   Pincode *
                 </label>
                 <input
@@ -374,24 +365,24 @@ export default function CourierForm() {
                   value={formData.receiverPincode}
                   onChange={handleInputChange}
                   required
-                  pattern="[0-9]{6}"
-                  maxLength="6"
-                  placeholder="6-digit pincode"
                   style={{
                     width: '100%',
                     padding: '14px',
-                    border: '2px solid #fce4ec',
+                    border: '2px solid #e0f7fa',
                     borderRadius: '10px',
                     fontSize: '16px',
-                    boxSizing: 'border-box'
+                    boxSizing: 'border-box',
+                    transition: 'border-color 0.3s'
                   }}
+                  onFocus={(e) => e.target.style.borderColor = '#00bcd4'}
+                  onBlur={(e) => e.target.style.borderColor = '#e0f7fa'}
                 />
               </div>
             </div>
 
-            {/* Package Section */}
+            {/* Package Details Section */}
             <div style={{
-              background: 'linear-gradient(135deg, #fff3e0, #ffcc80)',
+              background: 'linear-gradient(135deg, #ffe0b2, #ffcc80)',
               padding: '30px',
               borderRadius: '20px',
               marginBottom: '30px',
@@ -586,6 +577,7 @@ export default function CourierForm() {
           </form>
         </div>
       </div>
+      <Footer />
     </>
   )
 }

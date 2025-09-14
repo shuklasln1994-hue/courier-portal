@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { CheckCircle, Package, MapPin, Clock, CreditCard } from 'lucide-react';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 export default function OrderConfirmation() {
   const router = useRouter();
@@ -42,8 +44,8 @@ export default function OrderConfirmation() {
         customerPhone: router.query.customerPhone || "",
         receiverName: router.query.receiverName || "",
         receiverPhone: router.query.receiverPhone || "",
-        authName: router.query.authName || "",
-        authMobile: router.query.authMobile || ""
+        authName: router.query.authName || (authData ? authData.name : ""),
+        authMobile: router.query.authMobile || (authData ? authData.mobile : "")
       };
       
       setOrderData(formattedOrderData);
@@ -111,64 +113,7 @@ export default function OrderConfirmation() {
         <div style={{ maxWidth: '900px', margin: '0 auto' }}>
           
           {/* Header */}
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            marginBottom: '30px', 
-            color: 'white' 
-          }}>
-            <div style={{ textAlign: 'left' }}>
-              <h1 style={{ 
-                fontSize: '3rem', 
-                margin: '0 0 10px 0',
-                textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
-                fontWeight: '700'
-              }}>
-                📦 NEXYE Courier
-              </h1>
-              <p style={{ fontSize: '1.3rem', opacity: '0.9', margin: '0' }}>
-                Fast, Reliable & Affordable Shipping Across India
-              </p>
-            </div>
-            
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ 
-                background: 'rgba(255,255,255,0.2)', 
-                padding: '10px 15px', 
-                borderRadius: '10px',
-                backdropFilter: 'blur(10px)',
-                marginBottom: '10px'
-              }}>
-                <p style={{ margin: '0', fontWeight: '500' }}>
-                  👤 {orderData.authName || 'User'}
-                </p>
-                <p style={{ margin: '0', fontSize: '0.9rem', opacity: '0.9' }}>
-                  📱 {orderData.authMobile || ''}
-                </p>
-              </div>
-              <button 
-                onClick={() => {
-                  localStorage.removeItem('userAuth');
-                  router.push('/auth');
-                }}
-                style={{
-                  background: 'rgba(255,255,255,0.2)',
-                  border: '1px solid rgba(255,255,255,0.4)',
-                  color: 'white',
-                  padding: '8px 15px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontSize: '0.9rem',
-                  fontWeight: '500',
-                  transition: 'all 0.3s',
-                  backdropFilter: 'blur(10px)'
-                }}
-              >
-                Logout
-              </button>
-            </div>
-          </div>
+          <Header />
           
           <div style={{ textAlign: 'center', marginBottom: '30px', color: 'white' }}>
             <p style={{ fontSize: '1.3rem', opacity: '0.9', margin: '0' }}>
@@ -603,39 +548,7 @@ export default function OrderConfirmation() {
             </div>
 
             {/* Footer */}
-            <div style={{ 
-              textAlign: 'center', 
-              color: 'white',
-              background: 'rgba(0,0,0,0.3)',
-              padding: '20px',
-              borderRadius: '15px',
-              backdropFilter: 'blur(10px)',
-              marginBottom: '20px'
-            }}>
-              <p style={{ marginBottom: '10px', fontSize: '0.95rem' }}>
-                Thank you for choosing NEXYE Courier for your shipping needs!
-              </p>
-              <p style={{ fontSize: '0.95rem' }}>
-                For any assistance, contact us at{' '}
-                <a href="mailto:support@nexye.com" style={{ 
-                  color: '#90caf9', 
-                  textDecoration: 'none',
-                  fontWeight: '500',
-                  borderBottom: '1px dotted #90caf9'
-                }}>
-                  support@nexye.com
-                </a>{' '}
-                or call{' '}
-                <a href="tel:+918888888888" style={{ 
-                  color: '#90caf9', 
-                  textDecoration: 'none',
-                  fontWeight: '500',
-                  borderBottom: '1px dotted #90caf9'
-                }}>
-                  +91 8888 888 888
-                </a>
-              </p>
-            </div>
+            <Footer />
           </div>
         </div>
       </div>

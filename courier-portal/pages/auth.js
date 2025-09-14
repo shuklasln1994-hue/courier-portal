@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
-export default function Authentication() { const router = useRouter();
+export default function Authentication() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     mobile: ''
@@ -63,7 +66,7 @@ export default function Authentication() { const router = useRouter();
         }));
         
         // Redirect to order form
-        router.push('/');
+        router.push('/order-form');
       }, 1000);
     }
   };
@@ -79,174 +82,158 @@ export default function Authentication() { const router = useRouter();
       
       <div style={{ 
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        padding: '20px',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
       }}>
-        <div style={{ maxWidth: '500px', margin: '0 auto' }}>
-          
-          {/* Header */}
-          <div style={{ textAlign: 'center', marginBottom: '30px', color: 'white' }}>
-            <h1 style={{ 
-              fontSize: '3rem', 
-              margin: '0 0 10px 0',
-              textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
-              fontWeight: '700'
+        <Header />
+        <div style={{ 
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          padding: '20px',
+          flexGrow: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+            <div style={{
+              background: 'rgba(255,255,255,0.98)',
+              borderRadius: '25px',
+              padding: '40px',
+              boxShadow: '0 25px 50px rgba(0,0,0,0.15)',
+              backdropFilter: 'blur(10px)'
             }}>
-              📦 NEXYE Courier
-            </h1>
-            <p style={{ fontSize: '1.3rem', opacity: '0.9', margin: '0' }}>
-              Authentication
-            </p>
-          </div>
-
-          <div style={{
-            background: 'rgba(255,255,255,0.98)',
-            borderRadius: '25px',
-            padding: '40px',
-            boxShadow: '0 25px 50px rgba(0,0,0,0.15)',
-            backdropFilter: 'blur(10px)'
-          }}>
-            <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-              <div style={{
-                width: '80px',
-                height: '80px',
-                background: '#e3f2fd',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 20px auto',
-                fontSize: '2.5rem'
-              }}>
-                🔐
-              </div>
-              <h2 style={{ 
-                fontSize: '1.8rem', 
-                fontWeight: '700',
-                color: '#1565c0',
-                margin: '0 0 10px 0'
-              }}>
-                Authenticate
-              </h2>
-              <p style={{ fontSize: '1rem', color: '#546e7a', margin: '0' }}>
-                Please enter your details to continue
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit}>
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#1565c0' }}>
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  style={{
-                    width: '100%',
-                    padding: '14px',
-                    border: errors.name ? '2px solid #f44336' : '2px solid #e1f5fe',
-                    borderRadius: '10px',
-                    fontSize: '16px',
-                    boxSizing: 'border-box',
-                    transition: 'border-color 0.3s'
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = errors.name ? '#f44336' : '#2196f3'}
-                  onBlur={(e) => e.target.style.borderColor = errors.name ? '#f44336' : '#e1f5fe'}
-                />
-                {errors.name && (
-                  <p style={{ color: '#f44336', margin: '5px 0 0 0', fontSize: '0.85rem' }}>
-                    {errors.name}
-                  </p>
-                )}
-              </div>
-
-              <div style={{ marginBottom: '30px' }}>
-                <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#1565c0' }}>
-                  Mobile Number *
-                </label>
-                <input
-                  type="tel"
-                  name="mobile"
-                  value={formData.mobile}
-                  onChange={handleInputChange}
-                  placeholder="10-digit mobile number"
-                  style={{
-                    width: '100%',
-                    padding: '14px',
-                    border: errors.mobile ? '2px solid #f44336' : '2px solid #e1f5fe',
-                    borderRadius: '10px',
-                    fontSize: '16px',
-                    boxSizing: 'border-box',
-                    transition: 'border-color 0.3s'
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = errors.mobile ? '#f44336' : '#2196f3'}
-                  onBlur={(e) => e.target.style.borderColor = errors.mobile ? '#f44336' : '#e1f5fe'}
-                />
-                {errors.mobile && (
-                  <p style={{ color: '#f44336', margin: '5px 0 0 0', fontSize: '0.85rem' }}>
-                    {errors.mobile}
-                  </p>
-                )}
-              </div>
-
-              <button 
-                type="submit" 
-                disabled={isSubmitting}
-                style={{
-                  width: '100%',
-                  padding: '16px',
-                  background: 'linear-gradient(135deg, #1976d2, #1565c0)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '10px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                  opacity: isSubmitting ? 0.7 : 1,
-                  transition: 'all 0.3s',
+              <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+                <div style={{
+                  width: '80px',
+                  height: '80px',
+                  background: '#e3f2fd',
+                  borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                }}
-              >
-                {isSubmitting ? (
-                  <>
-                    <span style={{ 
-                      display: 'inline-block', 
-                      width: '20px', 
-                      height: '20px', 
-                      border: '3px solid rgba(255,255,255,0.3)', 
-                      borderRadius: '50%', 
-                      borderTopColor: 'white', 
-                      animation: 'spin 1s linear infinite',
-                      marginRight: '10px'
-                    }}></span>
-                    Authenticating...
-                  </>
-                ) : 'Continue to Order Form'}
-              </button>
-            </form>
+                  margin: '0 auto 20px auto',
+                  fontSize: '2.5rem'
+                }}>
+                  🔐
+                </div>
+                <h2 style={{ 
+                  fontSize: '1.8rem', 
+                  fontWeight: '700',
+                  color: '#1565c0',
+                  margin: '0 0 10px 0'
+                }}>
+                  Authenticate
+                </h2>
+                <p style={{ fontSize: '1rem', color: '#546e7a', margin: '0' }}>
+                  Please enter your details to continue
+                </p>
+              </div>
 
-            <style jsx>{`
-              @keyframes spin {
-                to { transform: rotate(360deg); }
-              }
-            `}</style>
-          </div>
+              <form onSubmit={handleSubmit}>
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#1565c0' }}>
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    style={{
+                      width: '100%',
+                      padding: '14px',
+                      border: errors.name ? '2px solid #f44336' : '2px solid #e1f5fe',
+                      borderRadius: '10px',
+                      fontSize: '16px',
+                      boxSizing: 'border-box',
+                      transition: 'border-color 0.3s'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = errors.name ? '#f44336' : '#2196f3'}
+                    onBlur={(e) => e.target.style.borderColor = errors.name ? '#f44336' : '#e1f5fe'}
+                  />
+                  {errors.name && (
+                    <p style={{ color: '#f44336', margin: '5px 0 0 0', fontSize: '0.85rem' }}>
+                      {errors.name}
+                    </p>
+                  )}
+                </div>
 
-          <div style={{ 
-            textAlign: 'center', 
-            color: 'white',
-            marginTop: '20px',
-            fontSize: '0.9rem'
-          }}>
-            <p>© 2023 NEXYE Courier. All rights reserved.</p>
+                <div style={{ marginBottom: '30px' }}>
+                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '8px', color: '#1565c0' }}>
+                    Mobile Number *
+                  </label>
+                  <input
+                    type="tel"
+                    name="mobile"
+                    value={formData.mobile}
+                    onChange={handleInputChange}
+                    placeholder="10-digit mobile number"
+                    style={{
+                      width: '100%',
+                      padding: '14px',
+                      border: errors.mobile ? '2px solid #f44336' : '2px solid #e1f5fe',
+                      borderRadius: '10px',
+                      fontSize: '16px',
+                      boxSizing: 'border-box',
+                      transition: 'border-color 0.3s'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = errors.mobile ? '#f44336' : '#2196f3'}
+                    onBlur={(e) => e.target.style.borderColor = errors.mobile ? '#f44336' : '#e1f5fe'}
+                  />
+                  {errors.mobile && (
+                    <p style={{ color: '#f44336', margin: '5px 0 0 0', fontSize: '0.85rem' }}>
+                      {errors.mobile}
+                    </p>
+                  )}
+                </div>
+
+                <button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  style={{
+                    width: '100%',
+                    padding: '16px',
+                    background: 'radial-gradient(circle at top left, #ff9a9e 0%, #fad0c4 50%, #ffe3e3 100%)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '10px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                    opacity: isSubmitting ? 0.7 : 1,
+                    transition: 'all 0.3s',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                  }}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <span style={{ 
+                        display: 'inline-block', 
+                        width: '20px', 
+                        height: '20px', 
+                        border: '3px solid rgba(255,255,255,0.3)', 
+                        borderRadius: '50%', 
+                        borderTopColor: 'white', 
+                        animation: 'spin 1s linear infinite',
+                        marginRight: '10px'
+                      }}></span>
+                      Authenticating...
+                    </>
+                  ) : 'Continue to Order Form'}
+                </button>
+              </form>
+
+              <style jsx>{`
+                @keyframes spin {
+                  to { transform: rotate(360deg); }
+                }
+              `}</style>
+            </div>
           </div>
         </div>
+        <Footer />
       </div>
     </>
   );
