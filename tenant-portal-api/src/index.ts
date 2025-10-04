@@ -3,12 +3,10 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import pinoHttp from 'pino-http';
-import pino from 'pino';
+import { logger } from './lib/logger';
+import { loadEnv } from './config/env';
 
-const logger = pino({
-  level: process.env.LOG_LEVEL || 'info',
-  transport: process.env.NODE_ENV !== 'production' ? { target: 'pino-pretty' } : undefined,
-});
+const env = loadEnv();
 
 const app = express();
 
@@ -21,7 +19,6 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
-const port = Number(process.env.PORT || 4000);
-app.listen(port, () => {
-  logger.info({ port }, 'API listening');
+app.listen(env.PORT, () => {
+  logger.info({ port: env.PORT }, 'API listening');
 });
